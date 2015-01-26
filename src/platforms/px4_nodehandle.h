@@ -187,14 +187,13 @@ public:
 	 */
 
 	template<typename T>
-	// Subscriber<T> *subscribe(void(*fp)(const T &),  unsigned interval)
-	void subscribe(void(*fp)(const T &),  unsigned interval)
+	Subscriber<T> *subscribe(void(*fp)(const T &),  unsigned interval)
 	{
 		(void)interval;
 		SubscriberUORBCallback<T> *sub_px4 = new SubscriberUORBCallback<T>(interval, std::bind(fp, std::placeholders::_1));
-		// update_sub_min_interval(interval, sub_px4);
-		// _subs.add((SubscriberNode *)sub_px4);
-		// return (Subscriber<T> *)sub_px4;
+		update_sub_min_interval(interval, sub_px4);
+		_subs.add((SubscriberNode *)sub_px4);
+		return (Subscriber<T> *)sub_px4;
 	}
 
 	/**
@@ -203,14 +202,13 @@ public:
 	 * @param obj	        pointer class instance
 	 */
 	template<typename T, typename C>
-	// Subscriber<T> *subscribe(void(C::*fp)(const T &), C *obj, unsigned interval)
-	void subscribe(void(C::*fp)(const T &), C *obj, unsigned interval)
+	Subscriber<T> *subscribe(void(C::*fp)(const T &), C *obj, unsigned interval)
 	{
 		(void)interval;
 		SubscriberUORBCallback<T> *sub_px4 = new SubscriberUORBCallback<T>(interval, std::bind(fp, obj, std::placeholders::_1));
-		// update_sub_min_interval(interval, sub_px4);
-		// _subs.add((SubscriberNode *)sub_px4);
-		// return (Subscriber<T> *)sub_px4;
+		update_sub_min_interval(interval, sub_px4);
+		_subs.add((SubscriberNode *)sub_px4);
+		return (Subscriber<T> *)sub_px4;
 	}
 
 	/**
@@ -219,14 +217,13 @@ public:
 	 */
 
 	template<typename T>
-	// Subscriber<T> *subscribe(unsigned interval)
-	void subscribe(unsigned interval)
+	Subscriber<T> *subscribe(unsigned interval)
 	{
 		(void)interval;
 		SubscriberUORB<T> *sub_px4 = new SubscriberUORB<T>(interval);
-		// update_sub_min_interval(interval, sub_px4);
-		// _subs.add((SubscriberNode *)sub_px4);
-		// return (Subscriber<T> *)sub_px4;
+		update_sub_min_interval(interval, sub_px4);
+		_subs.add((SubscriberNode *)sub_px4);
+		return (Subscriber<T> *)sub_px4;
 	}
 
 	/**

@@ -75,7 +75,7 @@ SubscriberExample::SubscriberExample() :
 	_n.subscribe<px4_vehicle_attitude>(&SubscriberExample::vehicle_attitude_callback, this, 1000);
 
 	/* Class Method 3 */
-	// _n.subscribe<px4_vehicle_rates_setpoint>(&SubscriberExample::vehicle_rates_setpoint_callback, this, 1000);
+	_n.subscribe<px4_vehicle_rates_setpoint>(&SubscriberExample::vehicle_rates_setpoint_callback, this, 1000);
 
 	PX4_INFO("subscribed");
 }
