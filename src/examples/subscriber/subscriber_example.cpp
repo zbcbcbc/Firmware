@@ -65,13 +65,17 @@ SubscriberExample::SubscriberExample() :
 	_n.subscribe<px4_rc_channels>(rc_channels_callback_function, _interval);
 
 	/* No callback */
-	_sub_rc_chan = _n.subscribe<px4_rc_channels>(500);
+	// _sub_rc_chan = _n.subscribe<px4_rc_channels>(500);
+	_n.subscribe<px4_rc_channels>(500);
 
 	/* Class Method */
 	_n.subscribe<px4_rc_channels>(&SubscriberExample::rc_channels_callback, this, 1000);
 
 	/* Class Method 2 */
 	_n.subscribe<px4_vehicle_attitude>(&SubscriberExample::vehicle_attitude_callback, this, 1000);
+
+	/* Class Method 3 */
+	// _n.subscribe<px4_vehicle_rates_setpoint>(&SubscriberExample::vehicle_rates_setpoint_callback, this, 1000);
 
 	PX4_INFO("subscribed");
 }
@@ -88,6 +92,11 @@ void SubscriberExample::rc_channels_callback(const px4_rc_channels &msg) {
 }
 
 void SubscriberExample::vehicle_attitude_callback(const px4_vehicle_attitude &msg) {
+	PX4_INFO("Callback (method): [%llu]",
+			msg.data().timestamp);
+}
+
+void SubscriberExample::vehicle_rates_setpoint_callback(const px4_vehicle_rates_setpoint &msg) {
 	PX4_INFO("Callback (method): [%llu]",
 			msg.data().timestamp);
 }

@@ -244,8 +244,8 @@ public:
 	 */
 	SubscriberUORBCallback(unsigned interval,
 			       std::function<void(const T &)> cbf) :
-		SubscriberUORB<T>(interval),
-		_cbf(cbf)
+		SubscriberUORB<T>(interval)//,
+		// _cbf(cbf)
 	{}
 
 	virtual ~SubscriberUORBCallback() {};
