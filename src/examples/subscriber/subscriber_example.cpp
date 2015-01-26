@@ -70,6 +70,9 @@ SubscriberExample::SubscriberExample() :
 	/* Class Method */
 	_n.subscribe<px4_rc_channels>(&SubscriberExample::rc_channels_callback, this, 1000);
 
+	/* Class Method 2 */
+	_n.subscribe<px4_vehicle_attitude>(&SubscriberExample::vehicle_attitude_callback, this, 1000);
+
 	PX4_INFO("subscribed");
 }
 
@@ -82,4 +85,9 @@ void SubscriberExample::rc_channels_callback(const px4_rc_channels &msg) {
 			msg.data().timestamp_last_valid);
 	PX4_INFO("Callback (method): value of _sub_rc_chan: [%llu]",
 			_sub_rc_chan->data().timestamp_last_valid);
+}
+
+void SubscriberExample::vehicle_attitude_callback(const px4_vehicle_attitude &msg) {
+	PX4_INFO("Callback (method): [%llu]",
+			msg.data().timestamp);
 }
