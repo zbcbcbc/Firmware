@@ -51,6 +51,8 @@
 #include <stdio.h>
 #include <debug.h>
 #include <errno.h>
+#include <fcntl.h>
+
 
 #include <nuttx/arch.h>
 #include <nuttx/spi/spi.h>
@@ -63,6 +65,7 @@
 #include <stm32.h>
 #include "board_config.h"
 #include <stm32_uart.h>
+#include <stm32_bbsram.h>
 
 #include <arch/board/board.h>
 
@@ -239,6 +242,41 @@ __EXPORT int nsh_archinitialize(void)
 #else
 #  error platform is dependent on c++ both CONFIG_HAVE_CXX and CONFIG_HAVE_CXXINITIALIZE must be defined.
 #endif
+#if defined(CONFIG_STM32_BBSRAM)
+	int filesizes[CONFIG_STM32_BBSRAM_FILES+1] = {1, 256, 256, -1, 0};
+	int nfc = stm32_bbsraminitialize("/fs/bbr", filesizes);
+
+        syslog(LOG_INFO, "[boot] %d Battery Back File(s) \n",nfc);
+#if defined(CONFIG_STM32_SAVE_CRASHDUMP)
+        int fd = open("/fs/bbr3",O_RDONLY);
+        if (fd < 0 ) {
+            syslog(LOG_INFO, "[boot] Failed to open Crash Log file (%d)\n",fd);
+        } else {
+            struct bbsramd_s desc;
+            int rv = ioctl(fd, STM32_BBSRAM_GETDESC_IOCTL, (unsigned long)((uintptr_t)&desc));
+            if (rv < 0) {
+                syslog(LOG_INFO, "[boot] Failed to get Crash Log dec (%d)\n",rv);
+            } else {
+                syslog(LOG_INFO, "[boot] Crash Log info File No %d Length %d state:0x%02x %lu sec, %lu nsec)\n",
+                    (unsigned int)desc.fileno, (unsigned int) desc.len, (unsigned int)desc.flags,
+                    (unsigned long)desc.lastwrite.tv_sec,(unsigned long)desc.lastwrite.tv_nsec);
+                if (desc.lastwrite.tv_sec || desc.lastwrite.tv_nsec) {
+                    syslog(LOG_INFO, "[boot] Crash Log Valid...parsing)\n");
+
+                }
+                rv = close(fd);
+                if (rv < 0) {
+                    syslog(LOG_INFO, "[boot] Failed to Close Crash Log (%d)\n",rv);
+                } else {
+                    rv = unlink("/fs/bbr3");
+                    if (rv < 0) {
+                        syslog(LOG_INFO, "[boot] Failed to Rearm Crash Log (%d)\n",rv);
+                    }
+                }
+            }
+        }
+#endif // CONFIG_STM32_SAVE_CRASHDUMP
+#endif // CONFIG_STM32_BBSRAM
 
 	/* configure the high-resolution time/callout interface */
 	hrt_init();
