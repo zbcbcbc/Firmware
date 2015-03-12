@@ -167,7 +167,7 @@ att_control_pid_thread_main(int argc, char *argv[])
 			//orb_check(manual_control_setpoint_sub, &updated);
 
 			//if (updated) {
-			//	orb_copy(ORB_ID(manual_control_setpoint), manual_control_setpoint_sub, &manual);
+				//orb_copy(ORB_ID(manual_control_setpoint), manual_control_setpoint_sub, &manual);
 			//}
 
 			/* attitude setpoint */
@@ -212,6 +212,11 @@ att_control_pid_thread_main(int argc, char *argv[])
 			bool reset_integral = !control_mode.flag_armed || att_sp.thrust < 0.1f;	// TODO use landed status instead of throttle
 
 			/* run attitude controller */
+			//float manual_pitch = manual.pitch / 1000; // 0 to 1 WARNING: the scale could be wrong
+			//float manual_roll = manual.roll / 1000; // 0 to 1
+			//att_sp.roll_body = manual_roll >= 0.8 ? 0.8 : manual_roll; //TODO: dangerous hack
+			//att_sp.pitch_body = manual_pitch >= 0.8 ? 0.8 : manual_pitch;
+
 
 			att_control_pid(&att_sp, &att, &rates_sp, control_yaw_position, reset_integral);
 			orb_publish(ORB_ID(vehicle_rates_setpoint), rates_sp_pub, &rates_sp);
