@@ -225,6 +225,7 @@ pos_control_pid_thread_main(int argc, char *argv[])
 
 	static bool sensors_ready = false;
 
+	printf("[pos_controller_pid] starting\n");
 	mavlink_log_info(mavlink_fd,"[pc] initialized\n");
 
 	while (!thread_should_exit) {
@@ -330,9 +331,8 @@ pos_control_pid_thread_main(int argc, char *argv[])
 						saturate(&thrust_control, params.limit_thrust_upper, params.limit_thrust_lower);
 
 
-						//mavlink_log_info(mavlink_fd, "[PC]2 tr:%.2f,p:%0.2f,i:%0.2f,z:%0.2f,sp:%0.2f", 
-						//	thrust_control, thrust_p, integrated_thrust_addition, local_pos.z, local_pos_sp.z);
-
+						//mavlink_log_info(mavlink_fd, "[PC]z:%.2f,z_sp:%.2ftr:%.2f",
+							//		local_pos.z, local_pos_sp.z,  thrust_control);
 						
 						/* store actual height for speed estimation */
 						last_local_pos_z = local_pos.z;
@@ -375,7 +375,6 @@ pos_control_pid_thread_main(int argc, char *argv[])
 
 		} else {
 			/* sensors not ready waiting for first attitude msg */
-
 			/* polling */
 			struct pollfd fds[1] = {
 				{ .fd = vehicle_attitude_sub, .events = POLLIN },

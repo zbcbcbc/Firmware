@@ -61,9 +61,9 @@ PARAM_DEFINE_FLOAT(PC_PID_L_HEIGHT_ERR, 0.5f);
 PARAM_DEFINE_FLOAT(PC_PID_L_HEIGHT_INT, 1.0f);
 // Altitude control rate limiter
 // Altitude control minimum altitude
-PARAM_DEFINE_FLOAT(PC_PID_H_MIN, 0.6f);
+PARAM_DEFINE_FLOAT(PC_PID_HEIGHT_MIN, 0.6f);
 // Altitude control maximum altitude (higher than 1.5m is untested)
-PARAM_DEFINE_FLOAT(PC_PID_H_MAX, 1.2f);
+PARAM_DEFINE_FLOAT(PC_PID_HEIGHT_MAX, 1.2f);
 // Altitude control feed forward throttle - adjust to the
 // throttle position (0..1) where the copter hovers in manual flight
 PARAM_DEFINE_FLOAT(PC_PID_T_FFWD, 0.69f); // adjust this before flight
@@ -90,11 +90,11 @@ int parameters_init(struct pos_control_pid_param_handles *h)
 	h->vel_p				=	param_find("PC_PID_VEL_P");
 	h->vel_i				=	param_find("PC_PID_VEL_I");
 	h->vel_d				=	param_find("PC_PID_VEL_D");
-	h->height_p 			=	param_find("PC_PID_H_P");
-	h->height_i 			=	param_find("PC_PID_H_I");
-	h->height_d 			=	param_find("PC_PID_H_D");
-	h->height_min			=	param_find("PC_PID_H_MIN");
-	h->height_max			=	param_find("PC_PID_H_MAX");
+	h->height_p 			=	param_find("PC_PID_HEIGHT_P");
+	h->height_i 			=	param_find("PC_PID_HEIGHT_I");
+	h->height_d 			=	param_find("PC_PID_HEIGHT_D");
+	h->height_min			=	param_find("PC_PID_HEIGHT_MIN");
+	h->height_max			=	param_find("PC_PID_HEIGHT_MAX");
 	h->thrust_feedforward 	=	param_find("PC_PID_T_FFWD");
 	h->limit_height_err		=	param_find("PC_PID_L_HEIGHT_ERR");
 	h->limit_height_int		=	param_find("PC_PID_L_HEIGHT_INT");
