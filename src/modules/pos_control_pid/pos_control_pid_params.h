@@ -60,9 +60,9 @@ struct pos_control_pid_params {
 	float limit_thrust_lower;
 	//float limit_yaw_step;
 	//float manual_threshold;
-	//float rc_scale_pitch;
-	//float rc_scale_roll;
-	//float rc_scale_yaw;
+	float rc_scale_pitch;
+	float rc_scale_roll;
+	float rc_scale_yaw;
 
 	// speed param added later on
 	float limit_pitch;
@@ -108,9 +108,9 @@ struct pos_control_pid_param_handles {
 	param_t limit_thrust_lower;
 	//param_t limit_yaw_step;
 	//param_t manual_threshold;
-	//param_t rc_scale_pitch;
-	//param_t rc_scale_roll;
-	//param_t rc_scale_yaw;
+	param_t rc_scale_pitch;
+	param_t rc_scale_roll;
+	param_t rc_scale_yaw;
 
 	// speed param_t later on
 	param_t limit_pitch;

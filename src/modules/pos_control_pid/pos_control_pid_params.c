@@ -107,9 +107,9 @@ int parameters_init(struct pos_control_pid_param_handles *h)
 	h->limit_thrust_lower 	=	param_find("PC_PID_L_TH_L");
 	//h->limit_yaw_step		=	param_find("PC_PID_L_YAW_STEP");
 	//h->manual_threshold 	=	param_find("PC_PID_MAN_THR");
-	//h->rc_scale_pitch		=   param_find("RC_SCALE_PITCH");
-	//h->rc_scale_roll		=   param_find("RC_SCALE_ROLL");
-	//h->rc_scale_yaw			=   param_find("RC_SCALE_YAW");
+	h->rc_scale_pitch		=   param_find("RC_SCALE_PITCH");
+	h->rc_scale_roll		=   param_find("RC_SCALE_ROLL");
+	h->rc_scale_yaw			=   param_find("RC_SCALE_YAW");
 
 	// speed params 
 	//h->speed_p	 			=	param_find("PC_PID_S_P");
@@ -158,9 +158,9 @@ int parameters_update(const struct pos_control_pid_param_handles *h, struct pos_
 	param_get(h->limit_thrust_lower, &(p->limit_thrust_lower));
 	//param_get(h->limit_yaw_step, &(p->limit_yaw_step));
 	//param_get(h->manual_threshold, &(p->manual_threshold));
-	//param_get(h->rc_scale_pitch, &(p->rc_scale_pitch));
-	//param_get(h->rc_scale_roll, &(p->rc_scale_roll));
-	//param_get(h->rc_scale_yaw, &(p->rc_scale_yaw));
+	param_get(h->rc_scale_pitch, &(p->rc_scale_pitch));
+	param_get(h->rc_scale_roll, &(p->rc_scale_roll));
+	param_get(h->rc_scale_yaw, &(p->rc_scale_yaw));
 	//param_get(h->takeoff_alt, &(p->takeoff_alt));
 	//param_get(h->takeoff_gap, &(p->takeoff_gap));
 

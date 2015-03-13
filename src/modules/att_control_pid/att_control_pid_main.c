@@ -48,7 +48,6 @@
 #include <uORB/topics/vehicle_control_mode.h>
 #include <uORB/topics/vehicle_attitude.h>
 #include <uORB/topics/vehicle_attitude_setpoint.h>
-//#include <uORB/topics/manual_control_setpoint.h>
 #include <uORB/topics/offboard_control_setpoint.h>
 #include <uORB/topics/vehicle_rates_setpoint.h>
 #include <uORB/topics/vehicle_status.h>
@@ -83,8 +82,6 @@ att_control_pid_thread_main(int argc, char *argv[])
 	memset(&offboard_sp, 0, sizeof(offboard_sp));
 	struct vehicle_control_mode_s control_mode;
 	memset(&control_mode, 0, sizeof(control_mode));
-	//struct manual_control_setpoint_s manual;
-	//memset(&manual, 0, sizeof(manual));
 	struct sensor_combined_s sensor;
 	memset(&sensor, 0, sizeof(sensor));
 	struct vehicle_rates_setpoint_s rates_sp;
@@ -100,7 +97,6 @@ att_control_pid_thread_main(int argc, char *argv[])
 	int vehicle_attitude_setpoint_sub = orb_subscribe(ORB_ID(vehicle_attitude_setpoint));
 	int offboard_control_setpoint_sub = orb_subscribe(ORB_ID(offboard_control_setpoint));
 	int vehicle_control_mode_sub = orb_subscribe(ORB_ID(vehicle_control_mode));
-	//int manual_control_setpoint_sub = orb_subscribe(ORB_ID(manual_control_setpoint));
 	int sensor_combined_sub = orb_subscribe(ORB_ID(sensor_combined));
 	int vehicle_rates_setpoint_sub = orb_subscribe(ORB_ID(vehicle_rates_setpoint));
 	int vehicle_status_sub = orb_subscribe(ORB_ID(vehicle_status));
@@ -163,12 +159,6 @@ att_control_pid_thread_main(int argc, char *argv[])
 				orb_copy(ORB_ID(vehicle_control_mode), vehicle_control_mode_sub, &control_mode);
 			}
 
-			/* manual control setpoint */
-			//orb_check(manual_control_setpoint_sub, &updated);
-
-			//if (updated) {
-				//orb_copy(ORB_ID(manual_control_setpoint), manual_control_setpoint_sub, &manual);
-			//}
 
 			/* attitude setpoint */
 			orb_check(vehicle_attitude_setpoint_sub, &updated);
@@ -210,12 +200,6 @@ att_control_pid_thread_main(int argc, char *argv[])
 
 			/* check if we should we reset integrals */
 			bool reset_integral = !control_mode.flag_armed || att_sp.thrust < 0.1f;	// TODO use landed status instead of throttle
-
-			/* run attitude controller */
-			//float manual_pitch = manual.pitch / 1000; // 0 to 1 WARNING: the scale could be wrong
-			//float manual_roll = manual.roll / 1000; // 0 to 1
-			//att_sp.roll_body = manual_roll >= 0.8 ? 0.8 : manual_roll; //TODO: dangerous hack
-			//att_sp.pitch_body = manual_pitch >= 0.8 ? 0.8 : manual_pitch;
 
 
 			att_control_pid(&att_sp, &att, &rates_sp, control_yaw_position, reset_integral);
@@ -261,7 +245,6 @@ att_control_pid_thread_main(int argc, char *argv[])
 
 	close(vehicle_attitude_sub);
 	close(vehicle_control_mode_sub);
-	//close(manual_control_setpoint_sub);
 	close(actuator_pub);
 	close(att_sp_pub);
 

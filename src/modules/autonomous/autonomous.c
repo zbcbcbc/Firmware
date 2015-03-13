@@ -208,6 +208,7 @@ autonomous_thread_main(int argc, char *argv[])
 			perf_begin(auto_loop_perf);
 
 			// Get a local copy 
+			// TODO: update if and only if the values are updated
 			orb_copy(ORB_ID(manual_control_setpoint), manual_control_setpoint_sub, &manual);
 			orb_copy(ORB_ID(actuator_armed), armed_sub, &armed);
 

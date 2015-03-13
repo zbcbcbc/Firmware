@@ -47,6 +47,7 @@
 #include <uORB/uORB.h>
 #include <uORB/topics/parameter_update.h>
 #include <uORB/topics/actuator_armed.h>
+#include <uORB/topics/manual_control_setpoint.h>
 #include <uORB/topics/vehicle_control_mode.h>
 #include <uORB/topics/vehicle_status.h>
 #include <uORB/topics/vehicle_attitude.h>
@@ -181,6 +182,9 @@ pos_control_pid_thread_main(int argc, char *argv[])
 	struct actuator_armed_s armed; // armed
 	memset(&armed, 0, sizeof(armed));
 
+	struct manual_control_setpoint_s manual;
+	memset(&manual, 0, sizeof(manual));
+
 
 	/* subscribe to attitude, motor setpoints and system state */
 	int armed_sub = orb_subscribe(ORB_ID(actuator_armed));
@@ -188,6 +192,7 @@ pos_control_pid_thread_main(int argc, char *argv[])
 	int vehicle_attitude_sub = orb_subscribe(ORB_ID(vehicle_attitude));
 	int local_pos_sub = orb_subscribe(ORB_ID(vehicle_local_position));
 	int local_pos_sp_sub = orb_subscribe(ORB_ID(vehicle_local_position_setpoint));
+	int manual_control_setpoint_sub = orb_subscribe(ORB_ID(manual_control_setpoint));
 
 	/* publish attitude set point */
 	orb_advert_t att_sp_pub;
@@ -283,6 +288,17 @@ pos_control_pid_thread_main(int argc, char *argv[])
 
 					orb_copy(ORB_ID(actuator_armed), armed_sub, &armed);
 
+					/* manual control setpoint */
+					//orb_check(manual_control_setpoint_sub, &updated);
+
+					//if (updated) {
+					orb_copy(ORB_ID(manual_control_setpoint), manual_control_setpoint_sub, &manual);
+					//}
+
+					float manual_pitch = manual.pitch / 1000; // TODO: params.rc_scale_pitch 0 to 1
+					float manual_roll = manual.roll / 1000; // 0 to 1
+					float manual_yaw = manual.yaw / 1000; // -1 to 1
+
 					if (!armed.armed) {
 						//TODO: In non-armed state, reset all state persistent variables
 						err_x_integral = err_vx_integral = 0.0f;
@@ -342,17 +358,26 @@ pos_control_pid_thread_main(int argc, char *argv[])
 						att_sp.yaw_body = 0;
 
 						/* add trim from parameters */
-						//att_sp.roll_body = roll_control + params.trim_roll;
-						//att_sp.pitch_body = pitch_control + params.trim_pitch;
+						//TODO: too risky
+						if (isfinite(manual_pitch)) {
+							att_sp.pitch_body = manual_pitch;
+						} else {
+							att_sp.pitch_body = 0;
+						}
 
-						att_sp.roll_body = 0;
-						att_sp.pitch_body = 0;
+						if (isfinite(manual_roll)) {
+							att_sp.roll_body = manual_roll;
+						} else {
+							att_sp.roll_body = 0;
+						}
+
+
 						if (local_pos_sp.z != 0) att_sp.thrust = thrust_control;
 						else att_sp.thrust = 0;
 						att_sp.timestamp = hrt_absolute_time();
 
 
-						//mavlink_log_info(mavlink_fd, "[dpc]r_sp:%0.2f,p_sp:%0.2f,t_sp:%0.2f", att_sp.roll_body, att_sp.pitch_body, att_sp.thrust);
+						mavlink_log_info(mavlink_fd, "[PC]r_sp:%0.2f,p_sp:%0.2f,t_sp:%0.2f", att_sp.roll_body, att_sp.pitch_body, att_sp.thrust);
 
 
 						/* lazy publish new attitude setpoint */
