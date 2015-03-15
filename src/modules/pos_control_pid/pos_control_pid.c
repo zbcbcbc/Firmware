@@ -295,9 +295,9 @@ pos_control_pid_thread_main(int argc, char *argv[])
 					orb_copy(ORB_ID(manual_control_setpoint), manual_control_setpoint_sub, &manual);
 					//}
 
-					float manual_pitch = manual.pitch / 1000; // TODO: params.rc_scale_pitch 0 to 1
-					float manual_roll = manual.roll / 1000; // 0 to 1
-					float manual_yaw = manual.yaw / 1000; // -1 to 1
+					float manual_pitch = manual.pitch / 3; // TODO: params.rc_scale_pitch 0 to 1
+					float manual_roll = manual.roll / 3; // 0 to 1
+					float manual_yaw = manual.yaw / 3; // -1 to 1
 
 					if (!armed.armed) {
 						//TODO: In non-armed state, reset all state persistent variables

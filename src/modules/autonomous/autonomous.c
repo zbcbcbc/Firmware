@@ -241,7 +241,7 @@ autonomous_thread_main(int argc, char *argv[])
 					operation_phase = true;
 					landing_phase = false;
 					standby_phase = false;
-					height_sp = 0.6;
+					height_sp = 0.85;
 
 					//mavlink_log_info(mavlink_fd, "[auto] triggered take off to 0.6 height");
 
